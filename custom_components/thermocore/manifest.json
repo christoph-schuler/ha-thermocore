@@ -1,0 +1,11 @@
+{
+  "domain": "thermocore",
+  "name": "HA-ThermoCore",
+  "version": "0.1.0",
+  "documentation": "https://github.com/ha-thermocore/ha-thermocore",
+  "issue_tracker": "https://github.com/ha-thermocore/ha-thermocore/issues",
+  "codeowners": ["@ha-thermocore"],
+  "requirements": [],
+  "iot_class": "local_polling",
+  "hacs": "1.0.0"
+}

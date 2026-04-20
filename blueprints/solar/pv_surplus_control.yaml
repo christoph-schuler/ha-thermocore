@@ -1,0 +1,122 @@
+blueprint:
+  name: "ThermoCore – PV-Überschuss Steuerung"
+  description: >
+    Nutzt PV-Überschuss intelligent: Boiler aufheizen, Wärmepumpe boosten,
+    Batterie laden. Konfigurierbare Schwellwerte und Prioritäten.
+  domain: automation
+  author: HA-ThermoCore
+  homeassistant:
+    min_version: "2024.1.0"
+  source_url: https://github.com/ha-thermocore/ha-thermocore/blob/main/blueprints/solar/pv_surplus_control.yaml
+
+  input:
+    pv_power_sensor:
+      name: "☀️ PV-Leistung Sensor"
+      description: "Sensor der aktuellen PV-Erzeugung in Watt"
+      selector:
+        entity:
+          domain: sensor
+          device_class: power
+
+    grid_power_sensor:
+      name: "⚡ Netzleistung Sensor"
+      description: "Positiv = Bezug, Negativ = Einspeisung"
+      selector:
+        entity:
+          domain: sensor
+          device_class: power
+
+    surplus_threshold:
+      name: "Überschuss-Schwellwert (W)"
+      description: "Ab wieviel Watt Überschuss soll reagiert werden?"
+      default: 1000
+      selector:
+        number:
+          min: 200
+          max: 5000
+          step: 100
+          unit_of_measurement: W
+
+    boiler_switch:
+      name: "💧 Boiler Boost Schalter"
+      description: "Schalter um den Boiler in den Boost-Modus zu versetzen"
+      default: {}
+      selector:
+        entity:
+          domain: switch
+
+    sg_ready_switch_1:
+      name: "🌡️ SG-Ready Eingang 1"
+      description: "SG-Ready Kontakt 1 der Wärmepumpe"
+      default: {}
+      selector:
+        entity:
+          domain: switch
+
+    sg_ready_switch_2:
+      name: "🌡️ SG-Ready Eingang 2"
+      description: "SG-Ready Kontakt 2 der Wärmepumpe"
+      default: {}
+      selector:
+        entity:
+          domain: switch
+
+    hysteresis_minutes:
+      name: "Hysterese (Minuten)"
+      description: "Wie lange muss der Überschuss stabil sein?"
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 30
+          step: 1
+          unit_of_measurement: min
+
+trigger:
+  - platform: numeric_state
+    entity_id: !input pv_power_sensor
+    above: !input surplus_threshold
+    for:
+      minutes: !input hysteresis_minutes
+    id: surplus_start
+
+  - platform: numeric_state
+    entity_id: !input pv_power_sensor
+    below: !input surplus_threshold
+    for:
+      minutes: !input hysteresis_minutes
+    id: surplus_end
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: surplus_start
+        sequence:
+          - service: switch.turn_on
+            target:
+              entity_id: !input boiler_switch
+          - service: switch.turn_on
+            target:
+              entity_id: !input sg_ready_switch_2
+          - service: notify.persistent_notification
+            data:
+              title: "☀️ ThermoCore: PV-Überschuss"
+              message: >
+                PV-Überschuss erkannt. Boiler und Wärmepumpe werden hochgeregelt.
+                Aktuell: {{ states(pv_power_sensor) }} W
+
+      - conditions:
+          - condition: trigger
+            id: surplus_end
+        sequence:
+          - service: switch.turn_off
+            target:
+              entity_id: !input boiler_switch
+          - service: switch.turn_off
+            target:
+              entity_id: !input sg_ready_switch_2
+          - service: notify.persistent_notification
+            data:
+              title: "☁️ ThermoCore: Überschuss beendet"
+              message: "PV-Überschuss unter Schwellwert. Normalbetrieb."
