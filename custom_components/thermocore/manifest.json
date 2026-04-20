@@ -1,7 +1,7 @@
 {
   "domain": "thermocore",
   "name": "HA-ThermoCore",
-  "version": "0.1.0",
+  "version": "0.1.11",
   "documentation": "https://github.com/ha-thermocore/ha-thermocore",
   "issue_tracker": "https://github.com/ha-thermocore/ha-thermocore/issues",
   "codeowners": ["@ha-thermocore"],
