@@ -1,0 +1,24 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    name: Create Release ZIP
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ZIP erstellen
+        run: |
+          zip -r ha-thermocore.zip custom_components/ hacs.json
+
+      - name: Release erstellen
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ha-thermocore.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
