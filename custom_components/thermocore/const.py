@@ -2,7 +2,7 @@
 
 DOMAIN = "thermocore"
 
-PLATFORMS = ["sensor", "switch", "number", "select"]
+PLATFORMS = ["sensor"]
 
 # Module names
 MODULE_HEATCORE = "heatcore"
