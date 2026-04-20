@@ -67,7 +67,7 @@ class ThermoCoreCoodinator(DataUpdateCoordinator):
             except ValueError:
                 return 0.0
 
-        config = self.entry.data
+        cconfig = {**self.entry.data, **self.entry.options}
         return EnergyState(
             pv_power=get_float(config.get(CONF_PV_ENTITY)),
             grid_power=get_float(config.get(CONF_GRID_ENTITY)),
