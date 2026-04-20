@@ -1,0 +1,77 @@
+title: ThermoCore
+views:
+  - title: Energie
+    icon: mdi:lightning-bolt
+    cards:
+      # EnergyBrain Status
+      - type: entities
+        title: 🧠 EnergyBrain
+        entities:
+          - entity: sensor.thermocore_modus
+            name: Modus
+          - entity: sensor.thermocore_begrundung
+            name: Begründung
+
+      # PV Überschuss
+      - type: gauge
+        title: ☀️ PV-Überschuss
+        entity: sensor.thermocore_pv_uberschuss
+        min: -5000
+        max: 10000
+        segments:
+          - from: -5000
+            color: "#ff0000"
+          - from: 0
+            color: "#ff9800"
+          - from: 1000
+            color: "#4caf50"
+
+      # Energie-Fluss
+      - type: energy-distribution
+        title: ⚡ Energiefluss
+
+  - title: Steuerung
+    icon: mdi:tune
+    cards:
+      # Modus wählen
+      - type: entities
+        title: 🎛️ Steuerung
+        entities:
+          - entity: select.thermocore_modus
+            name: Betriebsmodus
+
+      # Schnellaktionen
+      - type: button
+        name: 🌿 Eco-Modus
+        tap_action:
+          action: call-service
+          service: select.select_option
+          data:
+            option: eco
+            entity_id: select.thermocore_modus
+
+      - type: button
+        name: ☀️ Boost-Modus
+        tap_action:
+          action: call-service
+          service: select.select_option
+          data:
+            option: boost
+            entity_id: select.thermocore_modus
+
+  - title: Historie
+    icon: mdi:chart-line
+    cards:
+      - type: history-graph
+        title: 📈 PV-Überschuss Verlauf
+        hours_to_show: 24
+        entities:
+          - entity: sensor.thermocore_pv_uberschuss
+            name: PV-Überschuss
+
+      - type: history-graph
+        title: 🧠 Modus Verlauf
+        hours_to_show: 24
+        entities:
+          - entity: sensor.thermocore_modus
+            name: Modus
