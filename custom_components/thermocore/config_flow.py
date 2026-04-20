@@ -19,6 +19,10 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Geführte Einrichtung von HA-ThermoCore."""
 
     VERSION = 1
+    @staticmethod
+    @config_entries.callback
+    def async_get_options_flow(config_entry):
+        return ThermoCoreOptionsFlow()
     _data: dict = {}
 
     async def async_step_user(self, user_input=None):
@@ -89,6 +93,38 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_DYNAMIC_TARIFF, default=False): selector.BooleanSelector(),
                 vol.Optional(CONF_TARIFF_ENTITY): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="sensor")
+                ),
+            }),
+        )
+class ThermoCoreOptionsFlow(config_entries.OptionsFlow):
+    """Optionen nachträglich ändern."""
+
+    async def async_step_init(self, user_input=None):
+        """Schritt 1: Sensoren neu zuweisen."""
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        config = self.config_entry.data
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema({
+                vol.Optional(
+                    CONF_PV_ENTITY,
+                    default=config.get(CONF_PV_ENTITY, "")
+                ): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="sensor")
+                ),
+                vol.Optional(
+                    CONF_GRID_ENTITY,
+                    default=config.get(CONF_GRID_ENTITY, "")
+                ): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="sensor")
+                ),
+                vol.Optional(
+                    CONF_BATTERY_SOC_ENTITY,
+                    default=config.get(CONF_BATTERY_SOC_ENTITY, "")
+                ): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="sensor")
                 ),
             }),
