@@ -243,5 +243,11 @@ class ThermoCoreOptionsFlow(config_entries.OptionsFlow):
                 ): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="sensor")
                 ),
+                vol.Optional(
+                    CONF_BATTERY_CHARGE_CURRENT_ENTITY,
+                    default=config.get(CONF_BATTERY_CHARGE_CURRENT_ENTITY, "")
+                ): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="number")
+                ),
             }),
         )

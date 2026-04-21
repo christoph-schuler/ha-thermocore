@@ -57,3 +57,5 @@ CONF_CHARGE_GOAL_3_TIME = "charge_goal_3_time"
 CONF_LATITUDE = "latitude"
 CONF_LONGITUDE = "longitude"
 CONF_PV_PEAK_POWER = "pv_peak_power_kwp"  # Installierte PV-Leistung in kWp
+
+CONF_BATTERY_CHARGE_CURRENT_ENTITY = "battery_charge_current_entity"

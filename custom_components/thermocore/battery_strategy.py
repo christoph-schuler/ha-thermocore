@@ -54,6 +54,7 @@ class BatteryDecision:
     pv_forecast_corrected_kwh: float = 0.0
     energy_needed_kwh: float = 0.0
     grid_charge_kwh: float = 0.0
+    recommended_charge_current_amps: float = 4.0
     calibration_factor: float = 1.0
     string_forecasts: dict = field(default_factory=dict)
 
@@ -215,6 +216,19 @@ class BatteryStrategy:
                 f"{active_goal.target_time.strftime('%H:%M')}: "
                 f"PV reicht! {available_pv:.1f} kWh verfügbar"
             )
+        # Optimalen Ladestrom berechnen
+        BATTERY_VOLTAGE = 400.0
+        MAX_CHARGE_CURRENT = 25.0
+        MIN_CHARGE_CURRENT = 4.0
+        SAFETY_BUFFER = 1.2  # 20% Puffer
 
+        if hours_left > 0 and needed_kwh > 0:
+            # Minimaler Strom der gerade ausreicht
+            current_needed = (needed_kwh * 1000 / BATTERY_VOLTAGE / hours_left) * SAFETY_BUFFER
+            decision.recommended_charge_current_amps = round(
+                max(MIN_CHARGE_CURRENT, min(MAX_CHARGE_CURRENT, current_needed)), 1
+            )
+        else:
+            decision.recommended_charge_current_amps = MIN_CHARGE_CURRENT
         _LOGGER.info("Batterieentscheidung: %s", decision.reason)
         return decision

@@ -119,5 +119,6 @@ class BatteryDecisionSensor(ThermoCoreSensorBase):
                 "energy_needed_kwh": decision.energy_needed_kwh,
                 "grid_charge_kwh": decision.grid_charge_kwh,
                 "calibration_factor": decision.calibration_factor,
+                "recommended_charge_current_amps": decision.recommended_charge_current_amps,
             }
         return {}

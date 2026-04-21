@@ -15,6 +15,7 @@ from .const import (
     CONF_BATTERY_CAPACITY_ENTITY,
     CONF_BATTERY_CAPACITY_KWH,
     CONF_BATTERY_USE_SENSOR,
+    CONF_BATTERY_CHARGE_CURRENT_ENTITY,
     CONF_CHARGE_GOAL_1_SOC, CONF_CHARGE_GOAL_1_TIME,
     CONF_CHARGE_GOAL_2_SOC, CONF_CHARGE_GOAL_2_TIME,
     CONF_CHARGE_GOAL_3_SOC, CONF_CHARGE_GOAL_3_TIME,
@@ -52,9 +53,8 @@ class ThermoCoreCoodinator(DataUpdateCoordinator):
         config = {**self.entry.data, **self.entry.options}
 
         # Batteriekapazität ermitteln
-        capacity_kwh = 10.0  # Default
+        capacity_kwh = 10.0
         if config.get(CONF_BATTERY_USE_SENSOR):
-            # Wird später dynamisch aus Sensor gelesen
             capacity_kwh = 10.0
         else:
             try:
@@ -126,8 +126,9 @@ class ThermoCoreCoodinator(DataUpdateCoordinator):
             state = self._read_energy_state()
             decision = self.brain.decide(state)
 
-            # Batteriekapazität aus Sensor aktualisieren
             config = {**self.entry.data, **self.entry.options}
+
+            # Batteriekapazität aus Sensor aktualisieren
             if config.get(CONF_BATTERY_USE_SENSOR) and self._battery_strategy:
                 cap_entity = config.get(CONF_BATTERY_CAPACITY_ENTITY)
                 if cap_entity:
@@ -150,6 +151,26 @@ class ThermoCoreCoodinator(DataUpdateCoordinator):
                 battery_decision = await self._battery_strategy.calculate(
                     current_soc=state.battery_soc
                 )
+
+            # Ladestrom am Deye setzen
+            if battery_decision:
+                charge_current_entity = config.get(CONF_BATTERY_CHARGE_CURRENT_ENTITY)
+                if charge_current_entity:
+                    try:
+                        await self.hass.services.async_call(
+                            "number",
+                            "set_value",
+                            {
+                                "entity_id": charge_current_entity,
+                                "value": battery_decision.recommended_charge_current_amps,
+                            },
+                        )
+                        _LOGGER.debug(
+                            "Ladestrom gesetzt: %.1fA",
+                            battery_decision.recommended_charge_current_amps
+                        )
+                    except Exception as err:
+                        _LOGGER.warning("Ladestrom konnte nicht gesetzt werden: %s", err)
 
             _LOGGER.debug(
                 "EnergyBrain: %s – %s",
