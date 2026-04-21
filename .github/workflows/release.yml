@@ -20,7 +20,14 @@ jobs:
           TAG=${GITHUB_REF#refs/tags/v}
           sed -i "s/\"version\": \".*\"/\"version\": \"$TAG\"/" custom_components/thermocore/manifest.json
           echo "Version set to $TAG"
-          cat custom_components/thermocore/manifest.json | grep version
+
+      - name: Version committen
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add custom_components/thermocore/manifest.json
+          git commit -m "chore: bump version to ${GITHUB_REF#refs/tags/v}" || echo "Nothing to commit"
+          git push origin HEAD:main || echo "Push failed"
 
       - name: ZIP erstellen
         run: |
