@@ -161,17 +161,9 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="charge_goals",
             data_schema=vol.Schema({
                 vol.Optional(CONF_CHARGE_GOAL_1_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
+                    selector.NumberSelectorConfig(min=10, max=100, step=5)
                 ),
                 vol.Optional(CONF_CHARGE_GOAL_1_TIME): selector.TextSelector(),
-                vol.Optional(CONF_CHARGE_GOAL_2_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
-                ),
-                vol.Optional(CONF_CHARGE_GOAL_2_TIME): selector.TextSelector(),
-                vol.Optional(CONF_CHARGE_GOAL_3_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
-                ),
-                vol.Optional(CONF_CHARGE_GOAL_3_TIME): selector.TextSelector(),
             }),
         )
 
