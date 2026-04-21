@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers import selector
 
 from .const import (
@@ -25,10 +24,12 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Geführte Einrichtung von HA-ThermoCore."""
 
     VERSION = 1
+
     @classmethod
     @config_entries.callback
     def async_get_options_flow(cls, config_entry):
         return ThermoCoreOptionsFlow(config_entry)
+
     _data: dict = {}
 
     async def async_step_user(self, user_input=None):
@@ -54,7 +55,7 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ),
             }),
             description_placeholders={
-                "docs_url": "https://github.com/ha-thermocore/ha-thermocore/blob/main/docs/diy/README.md"
+                "docs_url": "https://github.com/christoph-schuler/ha-thermocore/blob/main/docs/diy/README.md"
             },
         )
 
@@ -160,20 +161,23 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="charge_goals",
             data_schema=vol.Schema({
                 vol.Optional(CONF_CHARGE_GOAL_1_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5,
-                    unit_of_measurement="%")
+                    selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
                 ),
-                vol.Optional(CONF_CHARGE_GOAL_1_TIME): selector.TimeSelector(),
+                vol.Optional(CONF_CHARGE_GOAL_1_TIME): selector.TextSelector(
+                    selector.TextSelectorConfig(type=selector.TextSelectorType.TIME)
+                ),
                 vol.Optional(CONF_CHARGE_GOAL_2_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5,
-                    unit_of_measurement="%")
+                    selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
                 ),
-                vol.Optional(CONF_CHARGE_GOAL_2_TIME): selector.TimeSelector(),
+                vol.Optional(CONF_CHARGE_GOAL_2_TIME): selector.TextSelector(
+                    selector.TextSelectorConfig(type=selector.TextSelectorType.TIME)
+                ),
                 vol.Optional(CONF_CHARGE_GOAL_3_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5,
-                    unit_of_measurement="%")
+                    selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
                 ),
-                vol.Optional(CONF_CHARGE_GOAL_3_TIME): selector.TimeSelector(),
+                vol.Optional(CONF_CHARGE_GOAL_3_TIME): selector.TextSelector(
+                    selector.TextSelectorConfig(type=selector.TextSelectorType.TIME)
+                ),
             }),
         )
 
@@ -195,7 +199,6 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional(CONF_LONGITUDE): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=-180, max=180, step=0.0001)
                 ),
-                # String 1
                 vol.Optional("pv_string_1_name"): selector.TextSelector(),
                 vol.Optional("pv_string_1_kwp"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
@@ -206,7 +209,6 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional("pv_string_1_tilt"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
                 ),
-                # String 2
                 vol.Optional("pv_string_2_name"): selector.TextSelector(),
                 vol.Optional("pv_string_2_kwp"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
@@ -217,7 +219,6 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional("pv_string_2_tilt"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
                 ),
-                # String 3
                 vol.Optional("pv_string_3_name"): selector.TextSelector(),
                 vol.Optional("pv_string_3_kwp"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
@@ -228,7 +229,6 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional("pv_string_3_tilt"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
                 ),
-                # String 4
                 vol.Optional("pv_string_4_name"): selector.TextSelector(),
                 vol.Optional("pv_string_4_kwp"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
@@ -239,7 +239,6 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional("pv_string_4_tilt"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
                 ),
-                # String 5
                 vol.Optional("pv_string_5_name"): selector.TextSelector(),
                 vol.Optional("pv_string_5_kwp"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
@@ -250,7 +249,6 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional("pv_string_5_tilt"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
                 ),
-                # String 6
                 vol.Optional("pv_string_6_name"): selector.TextSelector(),
                 vol.Optional("pv_string_6_kwp"): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
@@ -263,6 +261,8 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ),
             }),
         )
+
+
 class ThermoCoreOptionsFlow(config_entries.OptionsFlow):
     """Optionen nachträglich ändern."""
 
