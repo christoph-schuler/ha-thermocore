@@ -16,7 +16,6 @@ CALIBRATION_STORAGE_KEY = "thermocore_calibration"
 MAX_HISTORY_DAYS = 7
 
 
-@dataclass_like = None  # Wird unten als normale Klasse definiert
 
 
 class CalibrationEntry:

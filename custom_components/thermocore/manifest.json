@@ -1,7 +1,7 @@
 {
   "domain": "thermocore",
   "name": "HA-ThermoCore",
-  "version": "0.1.49",
+  "version": "0.1.50",
   "documentation": "https://github.com/christoph-schuler/ha-thermocore",
   "issue_tracker": "https://github.com/christoph-schuler/ha-thermocore/issues",
   "codeowners": ["@christoph-schuler"],
