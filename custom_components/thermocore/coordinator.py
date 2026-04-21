@@ -33,6 +33,7 @@ class ThermoCoreCoodinator(DataUpdateCoordinator):
         )
         self.entry = entry
         self.brain = EnergyBrain(hass, entry.data)
+        self._last_valid_state: EnergyState | None = None
 
     async def _async_update_data(self) -> dict:
         """Daten aus HA-Entitäten lesen und EnergyBrain entscheiden lassen."""
@@ -67,9 +68,29 @@ class ThermoCoreCoodinator(DataUpdateCoordinator):
             except ValueError:
                 return 0.0
 
+        def is_plausible(new: float, old: float, max_change_pct: float = 0.5) -> bool:
+            """Prüft ob ein neuer Wert plausibel ist."""
+            if old == 0:
+                return True
+            change = abs(new - old) / abs(old)
+            return change <= max_change_pct
+
         config = {**self.entry.data, **self.entry.options}
-        return EnergyState(
+        new_state = EnergyState(
             pv_power=get_float(config.get(CONF_PV_ENTITY)),
             grid_power=get_float(config.get(CONF_GRID_ENTITY)),
             battery_soc=get_float(config.get(CONF_BATTERY_SOC_ENTITY)),
         )
+
+        # Plausibilitätscheck – unplausible Werte durch letzten bekannten ersetzen
+        if self._last_valid_state is not None:
+            if not is_plausible(new_state.pv_power, self._last_valid_state.pv_power):
+                _LOGGER.warning("PV-Wert unplausibel: %sW → behalte %sW",
+                    new_state.pv_power, self._last_valid_state.pv_power)
+                new_state.pv_power = self._last_valid_state.pv_power
+
+            if not is_plausible(new_state.grid_power, self._last_valid_state.grid_power):
+                new_state.grid_power = self._last_valid_state.grid_power
+
+        self._last_valid_state = new_state
+        return new_state
