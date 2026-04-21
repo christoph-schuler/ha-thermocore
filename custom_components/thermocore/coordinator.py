@@ -46,6 +46,7 @@ class ThermoCoreCoodinator(DataUpdateCoordinator):
         self._last_valid_state: EnergyState | None = None
         self._battery_strategy: BatteryStrategy | None = None
         self._calibration: PVCalibration | None = None
+        self._last_charge_current: float | None = None
         self._setup_battery_strategy()
 
     def _setup_battery_strategy(self) -> None:
@@ -155,7 +156,10 @@ class ThermoCoreCoodinator(DataUpdateCoordinator):
             # Ladestrom am Deye setzen
             if battery_decision:
                 charge_current_entity = config.get(CONF_BATTERY_CHARGE_CURRENT_ENTITY)
-                if charge_current_entity:
+                
+                new_current = battery_decision.recommended_charge_current_amps
+                if charge_current_entity and new_current != self._last_charge_current:
+                    self._last_charge_current = new_current
                     try:
                         await self.hass.services.async_call(
                             "number",
