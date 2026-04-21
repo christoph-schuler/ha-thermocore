@@ -22,7 +22,7 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @config_entries.callback
     def async_get_options_flow(config_entry):
-        return ThermoCoreOptionsFlow()
+        return ThermoCoreOptionsFlow(config_entry)
     _data: dict = {}
 
     async def async_step_user(self, user_input=None):
@@ -100,13 +100,16 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class ThermoCoreOptionsFlow(config_entries.OptionsFlow):
     """Optionen nachträglich ändern."""
 
+    def __init__(self, config_entry):
+        self._config_entry = config_entry
+
     async def async_step_init(self, user_input=None):
         """Schritt 1: Sensoren neu zuweisen."""
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        config = {}
-        return self.async_show_form(
+        config = {**self._config_entry.data, **self._config_entry.options}
+                    return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
                 vol.Optional(
