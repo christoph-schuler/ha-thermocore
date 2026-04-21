@@ -25,6 +25,7 @@ async def async_setup_entry(
         EnergyBrainModeSensor(coordinator),
         EnergyBrainReasonSensor(coordinator),
         PVSurplusSensor(coordinator),
+        BatteryDecisionSensor(coordinator),  # NEU
     ])
 
 
@@ -90,3 +91,33 @@ class PVSurplusSensor(ThermoCoreSensorBase):
         if self._state:
             return round(self._state.pv_surplus, 1)
         return None
+    
+
+class BatteryDecisionSensor(ThermoCoreSensorBase):
+    """Zeigt die Batterieladestrategie-Entscheidung."""
+
+    def __init__(self, coordinator: ThermoCoreCoodinator) -> None:
+        super().__init__(coordinator, "battery_decision")
+        self._attr_name = "ThermoCore Batterie Entscheidung"
+        self._attr_icon = "mdi:battery-charging"
+
+    @property
+    def native_value(self) -> str | None:
+        decision = self.coordinator.data.get("battery_decision")
+        if decision:
+            return "Netzladung" if decision.should_charge_from_grid else "PV reicht"
+        return None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        decision = self.coordinator.data.get("battery_decision")
+        if decision:
+            return {
+                "reason": decision.reason,
+                "pv_forecast_kwh": decision.pv_forecast_kwh,
+                "pv_forecast_corrected_kwh": decision.pv_forecast_corrected_kwh,
+                "energy_needed_kwh": decision.energy_needed_kwh,
+                "grid_charge_kwh": decision.grid_charge_kwh,
+                "calibration_factor": decision.calibration_factor,
+            }
+        return {}
