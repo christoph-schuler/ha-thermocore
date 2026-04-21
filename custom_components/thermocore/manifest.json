@@ -1,11 +1,11 @@
 {
   "domain": "thermocore",
   "name": "HA-ThermoCore",
-  "version": "0.1.30",
+  "version": "0.1.31",
   "documentation": "https://github.com/christoph-schuler/ha-thermocore",
   "issue_tracker": "https://github.com/christoph-schuler/ha-thermocore/issues",
   "codeowners": ["@christoph-schuler"],
-  "requirements": [],
+  "requirements": ["aiohttp>=3.8.0", "aiofiles>=23.0.0"],
   "iot_class": "local_polling",
   "config_flow": true
 }

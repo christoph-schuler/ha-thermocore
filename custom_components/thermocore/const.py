@@ -40,3 +40,20 @@ DEFAULT_PV_SURPLUS_THRESHOLD = 1000   # ab 1kW Überschuss → Boiler/WP hochreg
 DEFAULT_PV_EXPORT_THRESHOLD = 500     # ab 500W Export → Maßnahmen einleiten
 DEFAULT_BATTERY_MIN_SOC = 20          # Batterie nie unter 20% entladen
 DEFAULT_BATTERY_TARGET_SOC = 80       # Normales Ladeziel
+# Batteriekapazität
+CONF_BATTERY_USE_SENSOR = "battery_use_capacity_sensor"
+CONF_BATTERY_CAPACITY_ENTITY = "battery_capacity_entity"
+CONF_BATTERY_CAPACITY_KWH = "battery_capacity_kwh"
+
+# Ladeziele
+CONF_CHARGE_GOAL_1_SOC = "charge_goal_1_soc"
+CONF_CHARGE_GOAL_1_TIME = "charge_goal_1_time"
+CONF_CHARGE_GOAL_2_SOC = "charge_goal_2_soc"
+CONF_CHARGE_GOAL_2_TIME = "charge_goal_2_time"
+CONF_CHARGE_GOAL_3_SOC = "charge_goal_3_soc"
+CONF_CHARGE_GOAL_3_TIME = "charge_goal_3_time"
+
+# Wetter
+CONF_LATITUDE = "latitude"
+CONF_LONGITUDE = "longitude"
+CONF_PV_PEAK_POWER = "pv_peak_power_kwp"  # Installierte PV-Leistung in kWp
