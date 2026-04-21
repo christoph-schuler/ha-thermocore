@@ -7,6 +7,5 @@
   "codeowners": ["@christoph-schuler"],
   "requirements": [],
   "iot_class": "local_polling",
-  "config_flow": true,
-  "hacs": "1.0.0"
+  "config_flow": true
 }
