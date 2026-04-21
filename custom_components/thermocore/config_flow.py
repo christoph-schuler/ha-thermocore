@@ -152,7 +152,7 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_charge_goals(self, user_input=None):
-        """Schritt 5: Ladeziele eingeben."""
+        """Schritt 5: Ladeziele eingeben (Format: HH:MM)."""
         if user_input is not None:
             self._data.update(user_input)
             return await self.async_step_pv_strings()
@@ -163,21 +163,15 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional(CONF_CHARGE_GOAL_1_SOC): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
                 ),
-                vol.Optional(CONF_CHARGE_GOAL_1_TIME): selector.TextSelector(
-                    selector.TextSelectorConfig(type=selector.TextSelectorType.TIME)
-                ),
+                vol.Optional(CONF_CHARGE_GOAL_1_TIME): selector.TextSelector(),
                 vol.Optional(CONF_CHARGE_GOAL_2_SOC): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
                 ),
-                vol.Optional(CONF_CHARGE_GOAL_2_TIME): selector.TextSelector(
-                    selector.TextSelectorConfig(type=selector.TextSelectorType.TIME)
-                ),
+                vol.Optional(CONF_CHARGE_GOAL_2_TIME): selector.TextSelector(),
                 vol.Optional(CONF_CHARGE_GOAL_3_SOC): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=10, max=100, step=5, unit_of_measurement="%")
                 ),
-                vol.Optional(CONF_CHARGE_GOAL_3_TIME): selector.TextSelector(
-                    selector.TextSelectorConfig(type=selector.TextSelectorType.TIME)
-                ),
+                vol.Optional(CONF_CHARGE_GOAL_3_TIME): selector.TextSelector(),
             }),
         )
 
