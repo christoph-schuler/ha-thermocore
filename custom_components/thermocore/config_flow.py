@@ -12,6 +12,12 @@ from .const import (
     MODULE_WATERCORE, MODULE_AIRCORE,
     CONF_MODULES, CONF_PV_ENTITY, CONF_GRID_ENTITY,
     CONF_BATTERY_SOC_ENTITY, CONF_DYNAMIC_TARIFF, CONF_TARIFF_ENTITY,
+    CONF_BATTERY_USE_SENSOR, CONF_BATTERY_CAPACITY_ENTITY,
+    CONF_BATTERY_CAPACITY_KWH,
+    CONF_CHARGE_GOAL_1_SOC, CONF_CHARGE_GOAL_1_TIME,
+    CONF_CHARGE_GOAL_2_SOC, CONF_CHARGE_GOAL_2_TIME,
+    CONF_CHARGE_GOAL_3_SOC, CONF_CHARGE_GOAL_3_TIME,
+    CONF_LATITUDE, CONF_LONGITUDE, CONF_PV_PEAK_POWER,
 )
 
 
@@ -83,10 +89,7 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Schritt 3: Dynamischer Stromtarif (optional)."""
         if user_input is not None:
             self._data.update(user_input)
-            return self.async_create_entry(
-                title="HA-ThermoCore",
-                data=self._data,
-            )
+            return await self.async_step_battery()
 
         return self.async_show_form(
             step_id="tariff",
@@ -94,6 +97,100 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_DYNAMIC_TARIFF, default=False): selector.BooleanSelector(),
                 vol.Optional(CONF_TARIFF_ENTITY): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="sensor")
+                ),
+            }),
+        )
+
+    async def async_step_battery(self, user_input=None):
+        """Schritt 4: Batteriekonfiguration."""
+        if user_input is not None:
+            self._data.update(user_input)
+            return await self.async_step_pv_strings()
+
+        return self.async_show_form(
+            step_id="battery",
+            data_schema=vol.Schema({
+                vol.Required(CONF_BATTERY_USE_SENSOR, default=True): selector.BooleanSelector(),
+                vol.Optional(CONF_BATTERY_CAPACITY_ENTITY): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="sensor")
+                ),
+                vol.Optional(CONF_BATTERY_CAPACITY_KWH): selector.NumberSelector(
+                    selector.NumberSelectorConfig(
+                        min=1, max=200, step=0.5,
+                        unit_of_measurement="kWh"
+                    )
+                ),
+                vol.Optional(CONF_CHARGE_GOAL_1_SOC): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=10, max=100, step=5)
+                ),
+                vol.Optional(CONF_CHARGE_GOAL_1_TIME): selector.TimeSelector(),
+                vol.Optional(CONF_CHARGE_GOAL_2_SOC): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=10, max=100, step=5)
+                ),
+                vol.Optional(CONF_CHARGE_GOAL_2_TIME): selector.TimeSelector(),
+                vol.Optional(CONF_CHARGE_GOAL_3_SOC): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=10, max=100, step=5)
+                ),
+                vol.Optional(CONF_CHARGE_GOAL_3_TIME): selector.TimeSelector(),
+            }),
+        )
+
+    async def async_step_pv_strings(self, user_input=None):
+        """Schritt 5: PV-Strings konfigurieren."""
+        if user_input is not None:
+            self._data.update(user_input)
+            return self.async_create_entry(
+                title="HA-ThermoCore",
+                data=self._data,
+            )
+
+        return self.async_show_form(
+            step_id="pv_strings",
+            data_schema=vol.Schema({
+                vol.Optional(CONF_LATITUDE): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=-90, max=90, step=0.0001)
+                ),
+                vol.Optional(CONF_LONGITUDE): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=-180, max=180, step=0.0001)
+                ),
+                vol.Optional("pv_string_1_name"): selector.TextSelector(),
+                vol.Optional("pv_string_1_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1,
+                    unit_of_measurement="kWp")
+                ),
+                vol.Optional("pv_string_1_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1,
+                    unit_of_measurement="°")
+                ),
+                vol.Optional("pv_string_1_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1,
+                    unit_of_measurement="°")
+                ),
+                vol.Optional("pv_string_2_name"): selector.TextSelector(),
+                vol.Optional("pv_string_2_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1,
+                    unit_of_measurement="kWp")
+                ),
+                vol.Optional("pv_string_2_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1,
+                    unit_of_measurement="°")
+                ),
+                vol.Optional("pv_string_2_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1,
+                    unit_of_measurement="°")
+                ),
+                vol.Optional("pv_string_3_name"): selector.TextSelector(),
+                vol.Optional("pv_string_3_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1,
+                    unit_of_measurement="kWp")
+                ),
+                vol.Optional("pv_string_3_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1,
+                    unit_of_measurement="°")
+                ),
+                vol.Optional("pv_string_3_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1,
+                    unit_of_measurement="°")
                 ),
             }),
         )
