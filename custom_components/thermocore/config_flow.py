@@ -170,7 +170,7 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
     
     async def async_step_pv_strings(self, user_input=None):
-        """Schritt 6: PV-Strings konfigurieren (bis zu 2)."""
+        """Schritt 6: PV-Strings konfigurieren (bis zu 6)."""
         if user_input is not None:
             self._data.update(user_input)
             return self.async_create_entry(
@@ -191,6 +191,22 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional("pv_string_2_kwp"): selector.TextSelector(),
                 vol.Optional("pv_string_2_azimuth"): selector.TextSelector(),
                 vol.Optional("pv_string_2_tilt"): selector.TextSelector(),
+                vol.Optional("pv_string_3_name"): selector.TextSelector(),
+                vol.Optional("pv_string_3_kwp"): selector.TextSelector(),
+                vol.Optional("pv_string_3_azimuth"): selector.TextSelector(),
+                vol.Optional("pv_string_3_tilt"): selector.TextSelector(),
+                vol.Optional("pv_string_4_name"): selector.TextSelector(),
+                vol.Optional("pv_string_4_kwp"): selector.TextSelector(),
+                vol.Optional("pv_string_4_azimuth"): selector.TextSelector(),
+                vol.Optional("pv_string_4_tilt"): selector.TextSelector(),
+                vol.Optional("pv_string_5_name"): selector.TextSelector(),
+                vol.Optional("pv_string_5_kwp"): selector.TextSelector(),
+                vol.Optional("pv_string_5_azimuth"): selector.TextSelector(),
+                vol.Optional("pv_string_5_tilt"): selector.TextSelector(),
+                vol.Optional("pv_string_6_name"): selector.TextSelector(),
+                vol.Optional("pv_string_6_kwp"): selector.TextSelector(),
+                vol.Optional("pv_string_6_azimuth"): selector.TextSelector(),
+                vol.Optional("pv_string_6_tilt"): selector.TextSelector(),
             }),
         )
 
