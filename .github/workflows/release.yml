@@ -15,6 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Version aus Tag setzen
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          sed -i "s/\"version\": \".*\"/\"version\": \"$TAG\"/" custom_components/thermocore/manifest.json
+          echo "Version set to $TAG"
+          cat custom_components/thermocore/manifest.json | grep version
+
       - name: ZIP erstellen
         run: |
           zip -r ha-thermocore.zip custom_components/ hacs.json
