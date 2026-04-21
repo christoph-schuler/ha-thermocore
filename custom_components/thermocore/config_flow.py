@@ -102,41 +102,83 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_battery(self, user_input=None):
-        """Schritt 4: Batteriekonfiguration."""
+        """Schritt 4: Kapazität automatisch oder manuell?"""
         if user_input is not None:
             self._data.update(user_input)
-            return await self.async_step_pv_strings()
+            if user_input.get(CONF_BATTERY_USE_SENSOR):
+                return await self.async_step_battery_sensor()
+            else:
+                return await self.async_step_battery_manual()
 
         return self.async_show_form(
             step_id="battery",
             data_schema=vol.Schema({
                 vol.Required(CONF_BATTERY_USE_SENSOR, default=True): selector.BooleanSelector(),
-                vol.Optional(CONF_BATTERY_CAPACITY_ENTITY): selector.EntitySelector(
+            }),
+        )
+
+    async def async_step_battery_sensor(self, user_input=None):
+        """Schritt 4a: Batteriekapazität aus Sensor."""
+        if user_input is not None:
+            self._data.update(user_input)
+            return await self.async_step_charge_goals()
+
+        return self.async_show_form(
+            step_id="battery_sensor",
+            data_schema=vol.Schema({
+                vol.Required(CONF_BATTERY_CAPACITY_ENTITY): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="sensor")
                 ),
-                vol.Optional(CONF_BATTERY_CAPACITY_KWH): selector.NumberSelector(
+            }),
+        )
+
+    async def async_step_battery_manual(self, user_input=None):
+        """Schritt 4b: Batteriekapazität manuell eingeben."""
+        if user_input is not None:
+            self._data.update(user_input)
+            return await self.async_step_charge_goals()
+
+        return self.async_show_form(
+            step_id="battery_manual",
+            data_schema=vol.Schema({
+                vol.Required(CONF_BATTERY_CAPACITY_KWH, default=10.0): selector.NumberSelector(
                     selector.NumberSelectorConfig(
                         min=1, max=200, step=0.5,
                         unit_of_measurement="kWh"
                     )
                 ),
+            }),
+        )
+
+    async def async_step_charge_goals(self, user_input=None):
+        """Schritt 5: Ladeziele eingeben."""
+        if user_input is not None:
+            self._data.update(user_input)
+            return await self.async_step_pv_strings()
+
+        return self.async_show_form(
+            step_id="charge_goals",
+            data_schema=vol.Schema({
                 vol.Optional(CONF_CHARGE_GOAL_1_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5)
+                    selector.NumberSelectorConfig(min=10, max=100, step=5,
+                    unit_of_measurement="%")
                 ),
                 vol.Optional(CONF_CHARGE_GOAL_1_TIME): selector.TimeSelector(),
                 vol.Optional(CONF_CHARGE_GOAL_2_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5)
+                    selector.NumberSelectorConfig(min=10, max=100, step=5,
+                    unit_of_measurement="%")
                 ),
                 vol.Optional(CONF_CHARGE_GOAL_2_TIME): selector.TimeSelector(),
                 vol.Optional(CONF_CHARGE_GOAL_3_SOC): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=10, max=100, step=5)
+                    selector.NumberSelectorConfig(min=10, max=100, step=5,
+                    unit_of_measurement="%")
                 ),
                 vol.Optional(CONF_CHARGE_GOAL_3_TIME): selector.TimeSelector(),
             }),
         )
 
     async def async_step_pv_strings(self, user_input=None):
-        """Schritt 5: PV-Strings konfigurieren."""
+        """Schritt 6: PV-Strings konfigurieren (bis zu 6)."""
         if user_input is not None:
             self._data.update(user_input)
             return self.async_create_entry(
@@ -153,44 +195,71 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional(CONF_LONGITUDE): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=-180, max=180, step=0.0001)
                 ),
+                # String 1
                 vol.Optional("pv_string_1_name"): selector.TextSelector(),
                 vol.Optional("pv_string_1_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1,
-                    unit_of_measurement="kWp")
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_1_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1,
-                    unit_of_measurement="°")
+                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="°")
                 ),
                 vol.Optional("pv_string_1_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1,
-                    unit_of_measurement="°")
+                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
                 ),
+                # String 2
                 vol.Optional("pv_string_2_name"): selector.TextSelector(),
                 vol.Optional("pv_string_2_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1,
-                    unit_of_measurement="kWp")
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_2_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1,
-                    unit_of_measurement="°")
+                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="°")
                 ),
                 vol.Optional("pv_string_2_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1,
-                    unit_of_measurement="°")
+                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
                 ),
+                # String 3
                 vol.Optional("pv_string_3_name"): selector.TextSelector(),
                 vol.Optional("pv_string_3_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1,
-                    unit_of_measurement="kWp")
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_3_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1,
-                    unit_of_measurement="°")
+                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="°")
                 ),
                 vol.Optional("pv_string_3_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1,
-                    unit_of_measurement="°")
+                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
+                ),
+                # String 4
+                vol.Optional("pv_string_4_name"): selector.TextSelector(),
+                vol.Optional("pv_string_4_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
+                ),
+                vol.Optional("pv_string_4_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="°")
+                ),
+                vol.Optional("pv_string_4_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
+                ),
+                # String 5
+                vol.Optional("pv_string_5_name"): selector.TextSelector(),
+                vol.Optional("pv_string_5_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
+                ),
+                vol.Optional("pv_string_5_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="°")
+                ),
+                vol.Optional("pv_string_5_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
+                ),
+                # String 6
+                vol.Optional("pv_string_6_name"): selector.TextSelector(),
+                vol.Optional("pv_string_6_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
+                ),
+                vol.Optional("pv_string_6_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="°")
+                ),
+                vol.Optional("pv_string_6_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="°")
                 ),
             }),
         )
