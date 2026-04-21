@@ -152,7 +152,7 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_charge_goals(self, user_input=None):
-        """Schritt 5: Ladeziele (SOC% und Uhrzeit HH:MM)."""
+        """Schritt 5: Ladeziele (SOC% 10-100, Uhrzeit HH:MM)."""
         if user_input is not None:
             self._data.update(user_input)
             return await self.async_step_pv_strings()
