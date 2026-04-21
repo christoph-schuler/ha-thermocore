@@ -164,6 +164,14 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     selector.NumberSelectorConfig(min=10, max=100, step=5)
                 ),
                 vol.Optional(CONF_CHARGE_GOAL_1_TIME): selector.TextSelector(),
+                vol.Optional(CONF_CHARGE_GOAL_2_SOC): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=10, max=100, step=5)
+                ),
+                vol.Optional(CONF_CHARGE_GOAL_2_TIME): selector.TextSelector(),
+                vol.Optional(CONF_CHARGE_GOAL_3_SOC): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=10, max=100, step=5)
+                ),
+                vol.Optional(CONF_CHARGE_GOAL_3_TIME): selector.TextSelector(),
             }),
         )
 
@@ -179,7 +187,72 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="pv_strings",
             data_schema=vol.Schema({
+                vol.Optional(CONF_LATITUDE): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=-90, max=90, step=0.0001)
+                ),
+                vol.Optional(CONF_LONGITUDE): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=-180, max=180, step=0.0001)
+                ),
                 vol.Optional("pv_string_1_name"): selector.TextSelector(),
+                vol.Optional("pv_string_1_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1)
+                ),
+                vol.Optional("pv_string_1_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1)
+                ),
+                vol.Optional("pv_string_1_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1)
+                ),
+                vol.Optional("pv_string_2_name"): selector.TextSelector(),
+                vol.Optional("pv_string_2_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1)
+                ),
+                vol.Optional("pv_string_2_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1)
+                ),
+                vol.Optional("pv_string_2_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1)
+                ),
+                vol.Optional("pv_string_3_name"): selector.TextSelector(),
+                vol.Optional("pv_string_3_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1)
+                ),
+                vol.Optional("pv_string_3_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1)
+                ),
+                vol.Optional("pv_string_3_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1)
+                ),
+                vol.Optional("pv_string_4_name"): selector.TextSelector(),
+                vol.Optional("pv_string_4_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1)
+                ),
+                vol.Optional("pv_string_4_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1)
+                ),
+                vol.Optional("pv_string_4_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1)
+                ),
+                vol.Optional("pv_string_5_name"): selector.TextSelector(),
+                vol.Optional("pv_string_5_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1)
+                ),
+                vol.Optional("pv_string_5_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1)
+                ),
+                vol.Optional("pv_string_5_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1)
+                ),
+                vol.Optional("pv_string_6_name"): selector.TextSelector(),
+                vol.Optional("pv_string_6_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1)
+                ),
+                vol.Optional("pv_string_6_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1)
+                ),
+                vol.Optional("pv_string_6_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1)
+                ),
             }),
         )
 
