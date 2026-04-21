@@ -155,10 +155,7 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Schritt 5: Ladeziele."""
         if user_input is not None:
             self._data.update(user_input)
-            return self.async_create_entry(
-                title="HA-ThermoCore",
-                data=self._data,
-            )
+            return await self.async_step_pv_strings()
 
         return self.async_show_form(
             step_id="charge_goals",
@@ -172,6 +169,46 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }),
         )
     
+    async def async_step_pv_strings(self, user_input=None):
+        """Schritt 6: PV-Strings konfigurieren (bis zu 2)."""
+        if user_input is not None:
+            self._data.update(user_input)
+            return self.async_create_entry(
+                title="HA-ThermoCore",
+                data=self._data,
+            )
+
+        return self.async_show_form(
+            step_id="pv_strings",
+            data_schema=vol.Schema({
+                vol.Optional(CONF_LATITUDE): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=-90, max=90, step=0.0001)
+                ),
+                vol.Optional(CONF_LONGITUDE): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=-180, max=180, step=0.0001)
+                ),
+                vol.Optional("pv_string_1_name"): selector.TextSelector(),
+                vol.Optional("pv_string_1_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1)
+                ),
+                vol.Optional("pv_string_1_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1)
+                ),
+                vol.Optional("pv_string_1_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1)
+                ),
+                vol.Optional("pv_string_2_name"): selector.TextSelector(),
+                vol.Optional("pv_string_2_kwp"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1)
+                ),
+                vol.Optional("pv_string_2_azimuth"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=360, step=1)
+                ),
+                vol.Optional("pv_string_2_tilt"): selector.NumberSelector(
+                    selector.NumberSelectorConfig(min=0, max=90, step=1)
+                ),
+            }),
+        )
 
 class ThermoCoreOptionsFlow(config_entries.OptionsFlow):
     """Optionen nachträglich ändern."""
