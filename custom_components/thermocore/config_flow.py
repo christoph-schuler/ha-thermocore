@@ -19,9 +19,9 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Geführte Einrichtung von HA-ThermoCore."""
 
     VERSION = 1
-    @staticmethod
+    @classmethod
     @config_entries.callback
-    def async_get_options_flow(config_entry):
+    def async_get_options_flow(cls, config_entry):
         return ThermoCoreOptionsFlow(config_entry)
     _data: dict = {}
 
