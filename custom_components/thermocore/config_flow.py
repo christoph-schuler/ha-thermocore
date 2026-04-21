@@ -187,63 +187,45 @@ class ThermoCoreConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 ),
                 vol.Optional("pv_string_1_name"): selector.TextSelector(),
                 vol.Optional("pv_string_1_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_1_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_1_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_2_name"): selector.TextSelector(),
                 vol.Optional("pv_string_2_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_2_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_2_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_3_name"): selector.TextSelector(),
                 vol.Optional("pv_string_3_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_3_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_3_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_4_name"): selector.TextSelector(),
                 vol.Optional("pv_string_4_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_4_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_4_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_5_name"): selector.TextSelector(),
                 vol.Optional("pv_string_5_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_5_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_5_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_6_name"): selector.TextSelector(),
                 vol.Optional("pv_string_6_kwp"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.1, unit_of_measurement="kWp")
                 ),
                 vol.Optional("pv_string_6_azimuth"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=360, step=1, unit_of_measurement="deg")
                 ),
                 vol.Optional("pv_string_6_tilt"): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=90, step=1, unit_of_measurement="deg")
                 ),
             }),
         )
